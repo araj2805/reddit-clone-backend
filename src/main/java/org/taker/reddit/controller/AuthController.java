@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.taker.reddit.dto.AuthenticationResponse;
+import org.taker.reddit.dto.LoginRequest;
 import org.taker.reddit.dto.RegisterRequest;
 import org.taker.reddit.service.AuthService;
 
@@ -26,5 +28,10 @@ public class AuthController {
     public ResponseEntity<String> accountVerification(@PathVariable String token) {
         authService.verifyAccount(token);
         return new ResponseEntity<>("Account Activiated Successfully ", HttpStatus.OK);
+    }
+
+    @PostMapping("/login")
+    public AuthenticationResponse login(@RequestBody LoginRequest loginRequest) {
+        return authService.login(loginRequest);
     }
 }

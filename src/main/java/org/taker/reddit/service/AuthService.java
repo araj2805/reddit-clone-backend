@@ -1,8 +1,14 @@
 package org.taker.reddit.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.taker.reddit.dto.AuthenticationResponse;
+import org.taker.reddit.dto.LoginRequest;
 import org.taker.reddit.dto.RegisterRequest;
 import org.taker.reddit.exception.SpringRedditException;
 import org.taker.reddit.model.NotificationEmail;
@@ -10,6 +16,7 @@ import org.taker.reddit.model.User;
 import org.taker.reddit.model.VerificationToken;
 import org.taker.reddit.repository.UserRepository;
 import org.taker.reddit.repository.VerificationTokenRepository;
+import org.taker.reddit.security.JwtProvider;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -30,6 +37,12 @@ public class AuthService {
 
     @Autowired
     MailService mailService;
+
+    @Autowired
+    AuthenticationManager authenticationManager;
+
+    @Autowired
+    JwtProvider jwtProvider;
 
     @Transactional
     public void signup(RegisterRequest registerRequest) {
@@ -70,5 +83,17 @@ public class AuthService {
 
         user.setEnabled(true);
         userRepository.save(user);
+    }
+
+    public AuthenticationResponse login(LoginRequest loginRequest) {
+
+
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        String token = jwtProvider.generateToken(authentication);
+
+        return new AuthenticationResponse(token, loginRequest.getUsername());
     }
 }

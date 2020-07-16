@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: Reddit-Clone
+  profiles:
+    active: dev
+
+logging:
+  level:
+    ROOT: INFO
+    ORG.TAKER.REDDIT: INFO
+
+server:
+  port: 8080
+  servlet:
+    context-path: /${spring.application.name}
+    session:
+      cookie:
+        http-only: true
