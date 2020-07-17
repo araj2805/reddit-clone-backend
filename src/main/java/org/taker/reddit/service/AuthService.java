@@ -7,6 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.taker.reddit.dto.AuthenticationResponse;
 import org.taker.reddit.dto.LoginRequest;
 import org.taker.reddit.dto.RegisterRequest;
@@ -18,7 +19,6 @@ import org.taker.reddit.repository.UserRepository;
 import org.taker.reddit.repository.VerificationTokenRepository;
 import org.taker.reddit.security.JwtProvider;
 
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
@@ -95,5 +95,14 @@ public class AuthService {
         String token = jwtProvider.generateToken(authentication);
 
         return new AuthenticationResponse(token, loginRequest.getUsername());
+    }
+
+    @Transactional(readOnly = true)
+    public User getCurrentUser() {
+
+        org.springframework.security.core.userdetails.User currentUser = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        User user = userRepository.findByUsername(currentUser.getUsername()).orElseThrow(() -> new SpringRedditException("User not found " + currentUser.getPassword()));
+        return user;
     }
 }
