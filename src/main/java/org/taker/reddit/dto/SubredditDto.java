@@ -12,7 +12,10 @@ import lombok.ToString;
 public class SubredditDto {
 
     private Long id;
+
     private String name;
+
     private String description;
+
     private Integer numberOfPosts;
 }
