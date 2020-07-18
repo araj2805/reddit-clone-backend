@@ -16,3 +16,7 @@ server:
     session:
       cookie:
         http-only: true
+jwt:
+  expiration:
+    #    time: 900000
+    time: 60000

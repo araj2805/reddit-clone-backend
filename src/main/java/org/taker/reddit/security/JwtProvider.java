@@ -2,6 +2,7 @@ package org.taker.reddit.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,13 @@ import java.util.Date;
 public class JwtProvider {
 
     private KeyStore keyStore;
+
+    @Value("${jwt.expiration.time}")
+    private Long jwtExpirationInMillis;
+
+    public Long getJwtExpirationInMillis() {
+        return jwtExpirationInMillis;
+    }
 
     @PostConstruct
     public void init() {
@@ -41,7 +49,17 @@ public class JwtProvider {
                 .setSubject(principal.getUsername())
                 .setIssuedAt(Date.from(Instant.now()))
                 .signWith(getPrivateKey())
-//                .setExpiration(Date.from(Instant.now().plusMillis(jwtExpirationInMillis)))
+                .setExpiration(Date.from(Instant.now().plusMillis(jwtExpirationInMillis)))
+                .compact();
+    }
+
+    public String generateTokenByUsername(String username) {
+
+        return Jwts.builder()
+                .setSubject(username)
+                .setIssuedAt(Date.from(Instant.now()))
+                .signWith(getPrivateKey())
+                .setExpiration(Date.from(Instant.now().plusMillis(jwtExpirationInMillis)))
                 .compact();
     }
 
