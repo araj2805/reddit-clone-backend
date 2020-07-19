@@ -6,11 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.util.StringUtils;
 import org.taker.reddit.config.ApplicationProperties;
 import org.taker.reddit.config.Constant;
+import org.taker.reddit.config.SwaggerConfiguration;
 
 import javax.annotation.PostConstruct;
 import java.net.InetAddress;
@@ -23,6 +25,7 @@ import java.util.Map;
 @SpringBootApplication
 @EnableAsync
 @EnableConfigurationProperties(ApplicationProperties.class)
+@Import(SwaggerConfiguration.class)
 public class RedditApplication {
 
     private static final Logger logger = LoggerFactory.getLogger(RedditApplication.class);

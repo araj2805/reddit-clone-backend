@@ -1,6 +1,6 @@
 package org.taker.reddit.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -26,28 +26,16 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@AllArgsConstructor
 public class AuthService {
 
-    @Autowired
-    PasswordEncoder passwordEncoder;
-
-    @Autowired
-    UserRepository userRepository;
-
-    @Autowired
-    VerificationTokenRepository verificationTokenRepository;
-
-    @Autowired
-    MailService mailService;
-
-    @Autowired
-    AuthenticationManager authenticationManager;
-
-    @Autowired
-    JwtProvider jwtProvider;
-
-    @Autowired
-    RefreshTokenService refreshTokenService;
+    private PasswordEncoder passwordEncoder;
+    private UserRepository userRepository;
+    private VerificationTokenRepository verificationTokenRepository;
+    private MailService mailService;
+    private AuthenticationManager authenticationManager;
+    private JwtProvider jwtProvider;
+    private RefreshTokenService refreshTokenService;
 
     @Transactional
     public void signup(RegisterRequest registerRequest) {
